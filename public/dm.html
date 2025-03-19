@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>1대1 채팅</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const socket = io();
+            const urlParams = new URLSearchParams(window.location.search);
+            const toUser = urlParams.get("to"); // DM 상대방 ID
+            const chatBox = document.getElementById("messages");
+            const dmTitle = document.getElementById("dm-title");
+
+            if (!toUser) {
+                alert("대상을 지정할 수 없습니다.");
+                window.location.href = "/users"; // 유저 목록으로 리디렉션
+                return;
+            }
+
+            dmTitle.textContent = `${toUser} 님과의 1:1 채팅`;
+
+            socket.emit("join dm", toUser);
+
+            socket.on("dm message", (data) => {
+                const messageElement = document.createElement("div");
+                messageElement.textContent = `${data.from}: ${data.message}`;
+                chatBox.appendChild(messageElement);
+            });
+
+            document.getElementById("send").addEventListener("click", () => {
+                const messageInput = document.getElementById("message");
+                const message = messageInput.value;
+
+                socket.emit("send dm", { to: toUser, message });
+                messageInput.value = "";
+            });
+        });
+    </script>
+</head>
+<body>
+    <h2 id="dm-title"></h2>
+    <div id="messages"></div>
+    <input id="message" type="text">
+    <button id="send">전송</button>
+</body>
+</html>

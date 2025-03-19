@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>현재 접속 중인 사용자</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        // 🔥 서버에서 유저 목록 업데이트를 받을 때 실행
+        socket.on("update users", (users) => {
+            displayUsers(users);
+        });
+
+        function displayUsers(users) {
+            const userList = document.getElementById("user-list");
+            userList.innerHTML = "";
+
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+
+            users.forEach(user => {
+                const userItem = document.createElement("div");
+                userItem.classList.add("user-item");
+                userItem.innerHTML = `
+                    <span>${user} (${formattedDate})</span>
+                    <button class="dm-btn" data-user="${user}">DM</button>
+                `;
+                userList.appendChild(userItem);
+            });
+
+            document.querySelectorAll(".dm-btn").forEach(button => {
+                button.addEventListener("click", (event) => {
+                    const selectedUser = event.target.getAttribute("data-user");
+                    alert(`DM to ${selectedUser} (기능은 추후 구현)`);
+                });
+            });
+        }
+    </script>
+</head>
+<body>
+    <h2>현재 접속 중인 사용자</h2>
+    <div id="user-list">로딩 중...</div>
+</body>
+</html>
