@@ -4,44 +4,63 @@
     <meta charset="UTF-8">
     <title>1대1 채팅</title>
     <script src="/socket.io/socket.io.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const socket = io();
-            const urlParams = new URLSearchParams(window.location.search);
-            const toUser = urlParams.get("to"); // DM 상대방 ID
-            const chatBox = document.getElementById("messages");
-            const dmTitle = document.getElementById("dm-title");
-
-            if (!toUser) {
-                alert("대상을 지정할 수 없습니다.");
-                window.location.href = "/users"; // 유저 목록으로 리디렉션
-                return;
-            }
-
-            dmTitle.textContent = `${toUser} 님과의 1:1 채팅`;
-
-            socket.emit("join dm", toUser);
-
-            socket.on("dm message", (data) => {
-                const messageElement = document.createElement("div");
-                messageElement.textContent = `${data.from}: ${data.message}`;
-                chatBox.appendChild(messageElement);
-            });
-
-            document.getElementById("send").addEventListener("click", () => {
-                const messageInput = document.getElementById("message");
-                const message = messageInput.value;
-
-                socket.emit("send dm", { to: toUser, message });
-                messageInput.value = "";
-            });
-        });
-    </script>
+    <style>
+        #navbar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            padding: 10px;
+            background: #f4f4f4;
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 60%;
+        }
+    </style>
 </head>
 <body>
+    <!-- 🔥 네비게이션 바 추가 -->
+    <div id="navbar">
+        <button onclick="window.location.href='/chat.html'">Chat</button>
+        <button onclick="window.location.href='/users.html'">Users</button>
+        <button onclick="window.location.href='/'">Logout</button>
+    </div>
+
     <h2 id="dm-title"></h2>
     <div id="messages"></div>
     <input id="message" type="text">
     <button id="send">전송</button>
+
+    <script>
+        const socket = io();
+        const urlParams = new URLSearchParams(window.location.search);
+        const toUser = urlParams.get("to"); // DM 상대방 ID
+        const chatBox = document.getElementById("messages");
+        const dmTitle = document.getElementById("dm-title");
+
+        if (!toUser) {
+            alert("대상을 지정할 수 없습니다.");
+            window.location.href = "/users"; // 유저 목록으로 리디렉션
+            return;
+        }
+
+        dmTitle.textContent = `${toUser} 님과의 1:1 채팅`;
+
+        socket.emit("join dm", toUser);
+
+        socket.on("dm message", (data) => {
+            const messageElement = document.createElement("div");
+            messageElement.textContent = `${data.from}: ${data.message}`;
+            chatBox.appendChild(messageElement);
+        });
+
+        document.getElementById("send").addEventListener("click", () => {
+            const messageInput = document.getElementById("message");
+            const message = messageInput.value;
+
+            socket.emit("send dm", { to: toUser, message });
+            messageInput.value = "";
+        });
+    </script>
 </body>
 </html>

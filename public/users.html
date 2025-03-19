@@ -4,10 +4,33 @@
     <meta charset="UTF-8">
     <title>현재 접속 중인 사용자</title>
     <script src="/socket.io/socket.io.js"></script>
+    <style>
+        #navbar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            padding: 10px;
+            background: #f4f4f4;
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 60%;
+        }
+    </style>
+</head>
+<body>
+    <!-- 🔥 네비게이션 바 추가 -->
+    <div id="navbar">
+        <button onclick="window.location.href='/chat.html'">Chat</button>
+        <button onclick="window.location.href='/'">Logout</button>
+    </div>
+
+    <h2>현재 접속 중인 사용자</h2>
+    <div id="user-list">로딩 중...</div>
+
     <script>
         const socket = io();
 
-        // 🔥 서버에서 유저 목록 업데이트를 받을 때 실행
         socket.on("update users", (users) => {
             displayUsers(users);
         });
@@ -21,25 +44,17 @@
 
             users.forEach(user => {
                 const userItem = document.createElement("div");
-                userItem.classList.add("user-item");
                 userItem.innerHTML = `
                     <span>${user} (${formattedDate})</span>
-                    <button class="dm-btn" data-user="${user}">DM</button>
+                    <button onclick="startDM('${user}')">DM</button>
                 `;
                 userList.appendChild(userItem);
             });
+        }
 
-            document.querySelectorAll(".dm-btn").forEach(button => {
-                button.addEventListener("click", (event) => {
-                    const selectedUser = event.target.getAttribute("data-user");
-                    alert(`DM to ${selectedUser} (기능은 추후 구현)`);
-                });
-            });
+        function startDM(user) {
+            window.location.href = `/dm.html?to=${user}`;
         }
     </script>
-</head>
-<body>
-    <h2>현재 접속 중인 사용자</h2>
-    <div id="user-list">로딩 중...</div>
 </body>
 </html>

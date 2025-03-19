@@ -28,22 +28,32 @@ export function setupChat(io: Server) {
             const username = user[0].username;
             users[userId] = { socketId: socket.id, username };
 
-            // 🔥 모든 클라이언트에게 유저 목록 업데이트
             io.emit("update users", Object.values(users).map(user => user.username));
 
-            // 🔥 입장 메시지
             io.emit("chat message", { username: "알림", message: `${username}님이 입장하셨습니다.` });
 
-            // 🔥 메시지 전송
             socket.on("chat message", (message) => {
                 io.emit("chat message", { username, message });
             });
 
-            // 🔥 유저가 퇴장할 경우 (연결 해제)
+            // 🔥 DM 방 참가
+            socket.on("join dm", (toUsername) => {
+                const toUser = Object.values(users).find(user => user.username === toUsername);
+                if (!toUser) return;
+                socket.join(`dm-${toUser.socketId}`);
+            });
+
+            // 🔥 DM 메시지 전송
+            socket.on("send dm", ({ to, message }) => {
+                const toUser = Object.values(users).find(user => user.username === to);
+                if (!toUser) return;
+
+                io.to(`dm-${toUser.socketId}`).emit("dm message", { from: username, message });
+            });
+
             socket.on("disconnect", () => {
                 delete users[userId];
 
-                // 🔥 유저 목록 업데이트
                 io.emit("update users", Object.values(users).map(user => user.username));
                 io.emit("chat message", { username: "알림", message: `${username}님이 나갔습니다.` });
             });
