@@ -1,11 +1,11 @@
 # 📌 환경설정 문서
 
 ## ✅ 1. 사용 기술 스택
-- **Node.js**: v16.14.2
-- **TypeScript**: v4.8.3
-- **Express.js**: v4.18.1
-- **Socket.io**: v4.5.0
-- **MySQL2**: v2.3.3
+- **Node.js**: v22.14.0
+- **TypeScript**: v5.8.2
+- **Express.js**: v4.21.2
+- **Socket.io**: v4.8.1
+- **MySQL2**: v3.13.0
 
 ## ✅ 2. MySQL 환경
 - **MySQL 버전**: 8.0
