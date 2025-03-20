@@ -5,7 +5,7 @@
     <title>공개 채팅방</title>
     <script src="/socket.io/socket.io.js"></script>
     <style>
-        /* 🔥 전체 레이아웃 */
+        /* 전체 레이아웃 */
         body {
             font-family: 'Arial', sans-serif;
             display: flex;
@@ -14,7 +14,7 @@
             background: #f4f4f9;
         }
 
-        /* 🔥 네비게이션 바 */
+        /* 네비게이션 바 */
         #navbar {
             display: flex;
             justify-content: flex-end;
@@ -45,7 +45,7 @@
             color: white;
         }
 
-        /* 🔥 채팅 컨테이너 */
+        /* 채팅 컨테이너 */
         #chat-container {
             flex: 2;
             padding: 80px 20px 20px;
@@ -58,7 +58,7 @@
             text-align: center;
         }
 
-        /* 🔥 메시지 박스 */
+        /* 메시지 박스 */
         #messages {
             flex: 1;
             height: 350px;
@@ -86,7 +86,7 @@
             color: black;
         }
 
-        /* 🔥 입력창 */
+        /* 입력창 */
         #input-area {
             display: flex;
             margin-top: 10px;
@@ -117,7 +117,7 @@
             background: #218838;
         }
 
-        /* 🔥 유저 박스 */
+        /* 유저 박스 */
         #user-box {
             flex: 1;
             max-width: 300px;
@@ -158,14 +158,14 @@
     </style>
 </head>
 <body>
-    <!-- 🔥 네비게이션 바 -->
+    <!-- 네비게이션 바 -->
     <div id="navbar">
         <button id="chat-btn">Chat</button>
         <button id="users-btn">Users</button>
         <button id="logout-btn">Logout</button>
     </div>
 
-    <!-- 🔥 공개 채팅방 -->
+    <!-- 공개 채팅방 -->
     <div id="chat-container">
         <h2>공개 채팅방</h2>
         <div id="messages"></div>
@@ -175,7 +175,7 @@
         </div>
     </div>
 
-    <!-- 🔥 접속 유저 표시 박스 -->
+    <!-- 접속 유저 표시 박스 -->
     <div id="user-box">
         <h3>현재 접속 중: <span id="user-count">0</span>명</h3>
         <ul id="user-list"></ul>
@@ -184,7 +184,7 @@
     <script>
         const socket = io();
 
-        // 🔥 채팅 메시지 수신
+        // 채팅 메시지 수신
         socket.on("chat message", (data) => {
             const div = document.createElement("div");
             div.textContent = `${data.username}: ${data.message}`;
@@ -192,7 +192,7 @@
             document.getElementById("messages").appendChild(div);
         });
 
-        // 🔥 유저 목록 업데이트
+        // 유저 목록 업데이트
         socket.on("update users", (users) => {
             const userList = document.getElementById("user-list");
             const userCount = document.getElementById("user-count");
@@ -207,7 +207,7 @@
             });
         });
 
-        // 🔥 메시지 전송
+        // 메시지 전송
         document.getElementById("send").addEventListener("click", () => {
             const msg = document.getElementById("message").value;
             if (msg.trim()) {
@@ -216,17 +216,17 @@
             }
         });
 
-        // 🔥 Chat 버튼 클릭 시 공개 채팅방 유지
+        // Chat 버튼 클릭 시 공개 채팅방 유지
         document.getElementById("chat-btn").addEventListener("click", () => {
             window.location.href = "/chat";
         });
 
-        // 🔥 Users 버튼 클릭 시 유저 목록 페이지로 이동
+        // Users 버튼 클릭 시 유저 목록 페이지로 이동
         document.getElementById("users-btn").addEventListener("click", () => {
             window.location.href = "/users";
         });
 
-        // 🔥 Logout 버튼 클릭 시 로그인 화면으로 이동 (소켓 해제 X)
+        // Logout 버튼 클릭 시 로그인 화면으로 이동
         document.getElementById("logout-btn").addEventListener("click", () => {
             window.location.href = "/";
         });

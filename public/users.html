@@ -6,7 +6,7 @@
     <title>현재 접속 중인 사용자</title>
     <script src="/socket.io/socket.io.js"></script>
     <style>
-        /* 🔥 전체 레이아웃 */
+        /* 전체 레이아웃 */
         body {
             font-family: 'Arial', sans-serif;
             display: flex;
@@ -17,7 +17,7 @@
             background: #f4f4f9;
         }
 
-        /* 🔥 네비게이션 바 */
+        /* 네비게이션 바 */
         #navbar {
             display: flex;
             justify-content: flex-end;
@@ -48,7 +48,7 @@
             color: white;
         }
 
-        /* 🔥 유저 목록 컨테이너 */
+        /* 유저 목록 컨테이너 */
         #user-container {
             background: white;
             padding: 20px;
@@ -66,7 +66,7 @@
             margin-bottom: 15px;
         }
 
-        /* 🔥 유저 목록 */
+        /* 유저 목록 */
         #user-list {
             list-style: none;
             padding: 0;
@@ -109,20 +109,20 @@
 </head>
 
 <body>
-    <!-- 🔥 네비게이션 바 -->
+    <!-- 네비게이션 바 -->
     <div id="navbar">
         <button onclick="window.location.href='/chat.html'">Chat</button>
         <button onclick="window.location.href='/'">Logout</button>
     </div>
 
-    <!-- 🔥 유저 목록 컨테이너 -->
+    <!-- 유저 목록 컨테이너 -->
     <div id="user-container">
         <h2>현재 접속 중인 사용자</h2>
         <ul id="user-list">로딩 중...</ul>
     </div>
 
     <script>
-        fetch('/connected-users')
+        fetch('/connected-users') //api 경로로
             .then(response => response.json())
             .then(data => {
                 if (data.error) {
@@ -131,16 +131,16 @@
                 }
                 displayUsers(data.users);
             })
-            .catch(error => console.error("❌ 유저 목록 가져오기 오류:", error));
+            .catch(error => console.error(" 유저 목록 가져오기 오류:", error));
 
         function displayUsers(users) {
-            const userList = document.getElementById("user-list");
+            const userList = document.getElementById("user-list"); //user
             userList.innerHTML = "";
 
-            const today = new Date();
+            const today = new Date(); //날짜짜
             const formattedDate = today.toISOString().split('T')[0];
 
-            users.forEach(user => {
+            users.forEach(user => { //dm
                 const userItem = document.createElement("div");
                 userItem.innerHTML = `
                 <span>${user} (${formattedDate})</span>
@@ -150,7 +150,7 @@
             });
         }
 
-        function startDM(user) {
+        function startDM(user) { //dm 버튼튼
             window.location.href = `/dm.html?to=${user}`;
         }
     </script>

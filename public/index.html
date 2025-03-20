@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>로그인 또는 회원가입</title>
     <style>
-        /* 🔥 전체 레이아웃 */
+        /* 전체 레이아웃 */
         body {
             font-family: 'Arial', sans-serif;
             display: flex;
@@ -15,7 +15,7 @@
             background: #f4f4f9;
         }
 
-        /* 🔥 로그인 폼 컨테이너 */
+        /* 로그인 폼 컨테이너 */
         #auth-container {
             background: white;
             padding: 30px;
@@ -52,7 +52,7 @@
             transition: 0.3s;
         }
 
-        /* 🔥 로그인 버튼 */
+        /* 로그인 버튼 */
         .login-btn {
             background: #007bff;
             color: white;
@@ -62,7 +62,7 @@
             background: #0056b3;
         }
 
-        /* 🔥 회원가입 버튼 */
+        /* 회원가입 버튼 */
         .register-btn {
             background: #28a745;
             color: white;
@@ -83,16 +83,13 @@
                 return;
             }
 
-            console.log("📌 요청 보냄:", { username, password, action });
-
-            fetch("/api/auth", {  // ✅ API 경로 수정
+            fetch("/login/auth", {  //API 경로
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ username, password, action })
             })
             .then(response => response.json())
             .then(data => {
-                console.log("📌 응답 받음:", data);
                 if (data.error) {
                     alert(data.error);
                 } else if (data.success) {
@@ -101,14 +98,13 @@
                 }
             })
             .catch(error => {
-                console.error("❌ 요청 오류:", error);
                 alert("서버 오류 발생");
             });
         }
     </script>
 </head>
 <body>
-    <!-- 🔥 로그인 & 회원가입 컨테이너 -->
+    <!-- 로그인 & 회원가입 컨테이너 -->
     <div id="auth-container">
         <h2>로그인 또는 회원가입</h2>
         <input id="username" type="text" placeholder="아이디">

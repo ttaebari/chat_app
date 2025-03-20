@@ -12,7 +12,8 @@ export const handleAuth = async (req: Request, res: Response): Promise<void> => 
     try {
         const [userRows]: any = await pool.query("SELECT * FROM users WHERE username = ?", [username]);
 
-        if (action === "login") {
+        //로그인 상황 처리리
+        if (action === "login") { 
             if (userRows.length === 0) {
                 res.json({ error: "가입되지 않은 아이디입니다." });
                 return;
@@ -43,7 +44,6 @@ export const handleAuth = async (req: Request, res: Response): Promise<void> => 
             return;
         }
     } catch (error) {
-        console.error("❌ 인증 처리 오류:", error);
         res.status(500).json({ error: "서버 오류 발생" });
         return;
     }
