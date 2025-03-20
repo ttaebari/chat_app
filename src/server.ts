@@ -41,7 +41,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '../public')));
 
 // 📌 회원가입 & 로그인 라우트
-app.use('/auth', authRoutes);
+app.use('/api', authRoutes);
 
 // 📌 채팅방 페이지 (`chat.html`)
 app.get('/chat', (req, res) => {
@@ -104,7 +104,7 @@ app.get('/connected-users', getConnectedUsers);
 setupChat(io);
 
 // 📌 서버 실행
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3370;
 server.listen(PORT, () => {
     console.log(`✅ Server running on http://localhost:${PORT}`);
 });

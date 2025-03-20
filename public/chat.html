@@ -5,70 +5,174 @@
     <title>공개 채팅방</title>
     <script src="/socket.io/socket.io.js"></script>
     <style>
+        /* 🔥 전체 레이아웃 */
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             display: flex;
+            height: 100vh;
+            margin: 0;
+            background: #f4f4f9;
         }
+
+        /* 🔥 네비게이션 바 */
         #navbar {
             display: flex;
             justify-content: flex-end;
-            gap: 15px;
-            padding: 10px;
-            background: #f4f4f4;
+            gap: 10px;
+            padding: 15px;
+            background: #007bff;
             position: fixed;
             top: 0;
             right: 0;
             width: 100%;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
         }
+
+        #navbar button {
+            background: white;
+            color: #007bff;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        #navbar button:hover {
+            background: #0056b3;
+            color: white;
+        }
+
+        /* 🔥 채팅 컨테이너 */
         #chat-container {
             flex: 2;
-            padding: 60px 20px 20px;
+            padding: 80px 20px 20px;
+            display: flex;
+            flex-direction: column;
         }
+
+        h2 {
+            color: #333;
+            text-align: center;
+        }
+
+        /* 🔥 메시지 박스 */
+        #messages {
+            flex: 1;
+            height: 350px;
+            overflow-y: auto;
+            border-radius: 5px;
+            padding: 10px;
+            background: white;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        #messages div {
+            padding: 8px;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+
+        #messages .my-message {
+            background: #007bff;
+            color: white;
+            text-align: right;
+        }
+
+        #messages .other-message {
+            background: #f1f1f1;
+            color: black;
+        }
+
+        /* 🔥 입력창 */
+        #input-area {
+            display: flex;
+            margin-top: 10px;
+        }
+
+        #message {
+            flex: 1;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+        }
+
+        #send {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+            transition: 0.3s;
+            margin-left: 5px;
+        }
+
+        #send:hover {
+            background: #218838;
+        }
+
+        /* 🔥 유저 박스 */
         #user-box {
             flex: 1;
-            max-width: 250px;
-            padding: 10px;
-            background: #f4f4f4;
+            max-width: 300px;
+            padding: 20px;
+            background: #fff;
             border-left: 1px solid #ddd;
+            box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.1);
             overflow-y: auto;
-            height: 100vh;
         }
-        #messages {
-            height: 300px;
-            overflow-y: auto;
-            border: 1px solid #ddd;
-            padding: 10px;
+
+        #user-box h3 {
+            margin-bottom: 10px;
+            color: #007bff;
+            text-align: center;
         }
+
         #user-list {
             list-style: none;
             padding: 0;
         }
+
         #user-list li {
-            background: white;
+            background: #f8f9fa;
             margin: 5px 0;
-            padding: 8px;
+            padding: 10px;
             border-radius: 5px;
             text-align: center;
             box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
+            font-weight: bold;
+            transition: 0.3s;
         }
-        button {
-            cursor: pointer;
+
+        #user-list li:hover {
+            background: #007bff;
+            color: white;
         }
+
     </style>
 </head>
 <body>
-    <!-- 🔥 네비게이션 바 추가 -->
+    <!-- 🔥 네비게이션 바 -->
     <div id="navbar">
         <button id="chat-btn">Chat</button>
         <button id="users-btn">Users</button>
         <button id="logout-btn">Logout</button>
     </div>
 
+    <!-- 🔥 공개 채팅방 -->
     <div id="chat-container">
         <h2>공개 채팅방</h2>
         <div id="messages"></div>
-        <input id="message" type="text">
-        <button id="send">전송</button>
+        <div id="input-area">
+            <input id="message" type="text" placeholder="메시지를 입력하세요...">
+            <button id="send">전송</button>
+        </div>
     </div>
 
     <!-- 🔥 접속 유저 표시 박스 -->
@@ -84,6 +188,7 @@
         socket.on("chat message", (data) => {
             const div = document.createElement("div");
             div.textContent = `${data.username}: ${data.message}`;
+            div.classList.add(data.username === "내아이디" ? "my-message" : "other-message");
             document.getElementById("messages").appendChild(div);
         });
 
@@ -93,7 +198,7 @@
             const userCount = document.getElementById("user-count");
 
             userList.innerHTML = "";
-            userCount.textContent = users.length; // 접속 중인 유저 수 표시
+            userCount.textContent = users.length;
 
             users.forEach(user => {
                 const li = document.createElement("li");
@@ -105,8 +210,10 @@
         // 🔥 메시지 전송
         document.getElementById("send").addEventListener("click", () => {
             const msg = document.getElementById("message").value;
-            socket.emit("chat message", msg);
-            document.getElementById("message").value = "";
+            if (msg.trim()) {
+                socket.emit("chat message", msg);
+                document.getElementById("message").value = "";
+            }
         });
 
         // 🔥 Chat 버튼 클릭 시 공개 채팅방 유지

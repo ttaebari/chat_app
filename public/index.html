@@ -2,19 +2,119 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>채팅앱 회원가입</title>
+    <title>로그인 또는 회원가입</title>
+    <style>
+        /* 🔥 전체 레이아웃 */
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: #f4f4f9;
+        }
+
+        /* 🔥 로그인 폼 컨테이너 */
+        #auth-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 350px;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            display: block;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        /* 🔥 로그인 버튼 */
+        .login-btn {
+            background: #007bff;
+            color: white;
+        }
+
+        .login-btn:hover {
+            background: #0056b3;
+        }
+
+        /* 🔥 회원가입 버튼 */
+        .register-btn {
+            background: #28a745;
+            color: white;
+        }
+
+        .register-btn:hover {
+            background: #218838;
+        }
+
+    </style>
+    <script>
+        function handleAuth(action) {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            if (!username || !password) {
+                alert("아이디와 비밀번호를 입력하세요.");
+                return;
+            }
+
+            console.log("📌 요청 보냄:", { username, password, action });
+
+            fetch("/api/auth", {  // ✅ API 경로 수정
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, password, action })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("📌 응답 받음:", data);
+                if (data.error) {
+                    alert(data.error);
+                } else if (data.success) {
+                    alert(data.success);
+                    window.location.href = data.redirect;
+                }
+            })
+            .catch(error => {
+                console.error("❌ 요청 오류:", error);
+                alert("서버 오류 발생");
+            });
+        }
+    </script>
 </head>
 <body>
-    <h2>회원가입</h2>
-    <form action="/auth/register" method="POST">
-        <label for="username">아이디:</label>
-        <input type="text" id="username" name="username" required>
-        <br>
-        <label for="password">비밀번호:</label>
-        <input type="password" id="password" name="password" required>
-        <br>
-        <button type="submit">회원가입</button>
-    </form>
+    <!-- 🔥 로그인 & 회원가입 컨테이너 -->
+    <div id="auth-container">
+        <h2>로그인 또는 회원가입</h2>
+        <input id="username" type="text" placeholder="아이디">
+        <input id="password" type="password" placeholder="비밀번호">
+        <button class="login-btn" onclick="handleAuth('login')">로그인</button>
+        <button class="register-btn" onclick="handleAuth('register')">회원가입</button>
+    </div>
 </body>
 </html>
